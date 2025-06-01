@@ -20,33 +20,44 @@ def make_image(country:str):
     return image[country]
 
 # st.title＝タイトル表示
-st.title("Streamlitクリスマスカード 🎅")
+st.title(f"Streamlitクリスマスカード 🎅")
 
 # st.button=ボタンを作成。押すとTrueが返ってくる。括弧内はボタンに表示する文字
-button_pushed = st.button("雪を降らせる")
+button_pushed = st.button(f"雪を降らせる")
 # もしbutton_pushedの結果がTrueだったら、st.snowを実行する
 if button_pushed:
     st.snow()
 
-name = st.text_input(
-    label = "あなたの名前を入力してください",
-    placeholder = "山田花子")
+card_number = st.slider(f'送る枚数を選択してください', 1, 5)
 
-# 空白選んでたらTrue判定だと思ったんだけど、違うらしい
-country = st.selectbox(
-    'あなたの国',
+st.write(f'送る枚数', card_number)
+
+# card_numberに合わせて入力フォームを表示
+# rangeは指定範囲を繰り返すときに使う
+# テキストを表示するときは冒頭にfが必要
+# iの定義は不要らしい
+for i in range(card_number):
+    name = st.text_input(
+    label = f'{i+1}人目の名前を入力してください',
+    placeholder = f'山田花子')
+
+    country = st.selectbox(
+    f'{i+1}人目の国を選んでください',
     ['','日本', 'アメリカ', '中国', 'オーストラリア'],
     )
 
-st.write('名前:', name)
-st.write('国：', country)
-
-if name and country:
-    st.write('入力が完了しました！')
-    message = make_message(name, country)
-    st.write(message)
-    image = make_image(country)
-    # 画像を表示するときはst.image
-    st.image(image)
+    # テキストが全く同じ表示だとバグる？
+    show_image = st.checkbox(f'{i+1}人目のカードに画像を表示しますか？')
+    
+    if name and country:
+        st.divider()
+        st.caption(f'💌 {name}にサンタさんからのクリスマスカードが届いたよ！')
+        message = make_message(name, country)
+        st.write(message)
+        image = make_image(country)
+        # 画像を表示するときはst.image
+        if show_image:
+            st.image(image)
+        st.divider()
 
 
